@@ -27,11 +27,13 @@ const Box = ({ imgUrl, box }) => {
   const imgRef = useRef(null)
   const canvasRef = useRef<HTMLCanvasElement>(null)
 
-  useEffect(() => {
-    if (!imgRef.current || !canvasRef.current) {
+  const onLoad = () => {
+    console.log(imgRef.current?.width)
+    if (!imgRef.current || !canvasRef.current || imgRef.current.width < 1) {
       return
     }
     const { width, height } = imgRef.current
+    console.log(imgRef.current, width, height)
     canvasRef.current.width = width
     canvasRef.current.height = height
     const ctx = canvasRef.current.getContext("2d")
@@ -40,6 +42,7 @@ const Box = ({ imgUrl, box }) => {
     const rects = getRects(width, height, box)
     rects.map((r) => {
       const { x, y, w, h } = r
+      ctx.strokeStyle = "blue"
       ctx.strokeRect(x, y, w, h)
     })
 
@@ -48,12 +51,18 @@ const Box = ({ imgUrl, box }) => {
       const { x, y, w, h, char } = r
       ctx.fillText(char, x + w / 2, y + h / 2)
     })
-  }, [box, imgUrl, imgRef.current])
+  }
+  // , [box, imgUrl, imgRef.current, imgRef.current?.width])
   return (
     <div className="container">
       <h1>OCR</h1>
       <main></main>
-      <img ref={imgRef} src={imgUrl} style={{ display: "none" }} />
+      <img
+        ref={imgRef}
+        src={imgUrl}
+        style={{ maxWidth: "50vw", maxHeight: "50vh" }}
+        onLoad={onLoad}
+      />
       <canvas
         ref={canvasRef}
         style={{ maxWidth: "50vw", maxHeight: "50vh" }}
@@ -96,6 +105,7 @@ export default function Home() {
   return (
     <div>
       <input
+        placeholder="URLを入れてね"
         disabled={isProcessing}
         value={urlRaw}
         onChange={(e) => setUrlRaw(e.target.value)}
@@ -105,7 +115,7 @@ export default function Home() {
       </button>
       {isProcessing && <div>解析中</div>}
       <div>{latestLog}</div>
-      {url && box && <Box box={box} imgUrl={url} />}
+      {url && box && <Box box={box} imgUrl={urlRaw} />}
       <pre>{text}</pre>
     </div>
   )

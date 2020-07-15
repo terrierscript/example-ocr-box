@@ -82,15 +82,16 @@ export default function Home() {
   }, [urlRaw])
   const start = () => {
     setProsessing(true)
-    work(url, (log) =>
+    work(url, (log) => {
+      console.log(log)
       setLog(
         // @ts-ignore
         JSON.stringify({
           status: log.status,
-          progress: log.progress,
+          progress: Math.ceil(Number(log.progress) * 10000) / 100,
         })
       )
-    )
+    })
       .then((result) => {
         console.log(result.data)
         console.log(result.data.text)
@@ -105,7 +106,7 @@ export default function Home() {
   return (
     <div>
       <input
-        placeholder="URLを入れてね"
+        placeholder="画像URLを入れてね"
         disabled={isProcessing}
         value={urlRaw}
         onChange={(e) => setUrlRaw(e.target.value)}

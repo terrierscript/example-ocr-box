@@ -1,5 +1,5 @@
 import { useRef, useEffect, useState } from "react"
-import { work } from "./ocr"
+import { work } from "../lib/ocr"
 
 const getRects = (width, height, box) => {
   return box

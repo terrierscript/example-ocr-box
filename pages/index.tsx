@@ -1,6 +1,3 @@
-import { readFileSync } from "fs"
-import Head from "next/head"
-import { box } from "./box"
 import { useRef, useEffect, useState } from "react"
 import { work } from "./ocr"
 
